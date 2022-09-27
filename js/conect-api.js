@@ -1,36 +1,29 @@
+const url_base = "https://gustavo-app-pagina.herokuapp.com";
+
 (() => {
   //Trayectoria academica
-  const $trayectoria_academica = document.getElementById("trayectoria-academica"),
+  const $trayectoria_academica = document.getElementById(
+      "trayectoria-academica"
+    ),
     $fragment_trayectoria_academica = document.createDocumentFragment(),
-
-
     //Contacto
     $correo = document.getElementById("correo"),
     $celular = document.getElementById("celular"),
-
-
     //Mis Proyectos
     $mis_proyectos = document.getElementById("mis-proyectos"),
     $fragment_mis_proyectos = document.createDocumentFragment(),
-
     //historial laboral
     $historial_laboral = document.getElementById("historial_laboral"),
     $fragment_historial_laboral = document.createDocumentFragment(),
-
     //Conocimiento
     $conocimiento = document.getElementById("conocimiento"),
     $fragment_conocimiento = document.createDocumentFragment(),
-    
     //Para la presentacion
     $presentacion_principal = document.getElementById("presentacion-principal"),
-    $presentacion_secundaria = document.getElementById("presentacion-secundaria"),
+    $presentacion_secundaria = document.getElementById(
+      "presentacion-secundaria"
+    ),
     $nombre_lateral = document.getElementById("nombre-lateral");
-
-
-
-
-
-    
 
   //obtener todas las persona de la bd
   /*axios.get("http://localhost:8080/persona")
@@ -57,129 +50,124 @@
     console.log("esto se ejecutara independientemente del resultado Axios");
   }); */
 
-  
-
-
-
-
   //Acatualizar y obtener datos de una persona segun su id, para la presentacion
 
-  axios.get("https://sagustavo-app.herokuapp.com/persona/id?id_persona=1").then(res => {
+  axios
+    .get(`${url_base}/persona/id?id_persona=1`)
+    .then((res) => {
+      let json = res.data;
 
-    let json = res.data;
+      //presentacion
+      const $texto_presentacion_principal = document.createTextNode(
+        json.presentacionPrincipal
+      );
+      $presentacion_principal.appendChild($texto_presentacion_principal);
 
-    //presentacion
-    const $texto_presentacion_principal = document.createTextNode(json.presentacionPrincipal);
-    $presentacion_principal.appendChild($texto_presentacion_principal);
+      const $texto_presentacion_secundaria = document.createTextNode(
+        json.presentacionSecundaria
+      );
+      $presentacion_secundaria.appendChild($texto_presentacion_secundaria);
 
-    const $texto_presentacion_secundaria = document.createTextNode(json.presentacionSecundaria);
-    $presentacion_secundaria.appendChild($texto_presentacion_secundaria);
+      const $texto_nombre_lateral = document.createTextNode(
+        json.apellido + " " + json.nombre
+      );
+      $nombre_lateral.appendChild($texto_nombre_lateral);
+    })
+    .catch((err) => {
+      const $texto_presentacion_principal = document.createTextNode(
+        "Error al cargar la presentacion desde la api: " + err
+      );
+      $presentacion_principal.appendChild($texto_presentacion_principal);
 
-    const $texto_nombre_lateral = document.createTextNode(json.apellido + " " + json.nombre);
-    $nombre_lateral.appendChild($texto_nombre_lateral);
+      const $texto_presentacion_secundaria = document.createTextNode(
+        "Error al cargar la presentacion desde la api: " + err
+      );
+      $presentacion_secundaria.appendChild($texto_presentacion_secundaria);
 
-    
-
-  }).catch(err => {
-    const $texto_presentacion_principal = document.createTextNode("Error al cargar la presentacion desde la api: " + err);
-    $presentacion_principal.appendChild($texto_presentacion_principal);
-
-    const $texto_presentacion_secundaria = document.createTextNode("Error al cargar la presentacion desde la api: " + err);
-    $presentacion_secundaria.appendChild($texto_presentacion_secundaria);
-
-    const $texto_nombre_lateral = document.createTextNode("Error al cargar el nombre desde la api: " + err);
-    $nombre_lateral.appendChild($texto_nombre_lateral);
-  }).finally(()=> {
-
-  });
-
+      const $texto_nombre_lateral = document.createTextNode(
+        "Error al cargar el nombre desde la api: " + err
+      );
+      $nombre_lateral.appendChild($texto_nombre_lateral);
+    })
+    .finally(() => {});
 
   //Trayectoria academica
 
   const $h3 = document.createElement("h3");
-    $h3.className = "mb-4 tm-text-primary";
-    $h3.innerHTML = "<u>Trayectoria academica</u>";
+  $h3.className = "mb-4 tm-text-primary";
+  $h3.innerHTML = "<u>Trayectoria academica</u>";
 
-    $trayectoria_academica.appendChild($h3);
+  $trayectoria_academica.appendChild($h3);
 
-    
-  axios.get("https://sagustavo-app.herokuapp.com/educacion/por_id?id_persona=1")
-  .then(res => {
-    console.log("Estamos en el then ", res);
+  axios
+    .get(`${url_base}/educacion/por_id?id_persona=1`)
+    .then((res) => {
+      console.log("Estamos en el then ", res);
 
-    let json = res.data;
+      let json = res.data;
 
-
-    json.forEach((el) => {
+      json.forEach((el) => {
         const $h5 = document.createElement("h5"),
-        $p = document.createElement("p");
+          $p = document.createElement("p");
 
         $p.innerHTML = `${el.descripcion}`;
 
         $h5.className = "mb-4 tm-text-primary";
         $h5.innerHTML = `${el.institucion}`;
 
-        
         $fragment_trayectoria_academica.appendChild($h5);
         $fragment_trayectoria_academica.appendChild($p);
-    });
+      });
 
-
-    $trayectoria_academica.appendChild($fragment_trayectoria_academica);
-    
-  })
-  .catch(err => {
-    const $p = document.createElement("p");
-    $p.innerHTML = "Error al cargar la trayectoria academica desde la api: " + err;
-    $trayectoria_academica.appendChild($p);
-  })
-  .finally(()=>{
-    
-  }); 
+      $trayectoria_academica.appendChild($fragment_trayectoria_academica);
+    })
+    .catch((err) => {
+      const $p = document.createElement("p");
+      $p.innerHTML =
+        "Error al cargar la trayectoria academica desde la api: " + err;
+      $trayectoria_academica.appendChild($p);
+    })
+    .finally(() => {});
 
   //Historial laboral
 
   const $h3_historial_laboral = document.createElement("h3");
-    $h3_historial_laboral.className = "mb-4 tm-text-primary";
-    $h3_historial_laboral.innerHTML = "<u>Resumen laboral</u>";
+  $h3_historial_laboral.className = "mb-4 tm-text-primary";
+  $h3_historial_laboral.innerHTML = "<u>Resumen laboral</u>";
 
-    $historial_laboral.appendChild($h3_historial_laboral);
+  $historial_laboral.appendChild($h3_historial_laboral);
 
-    
-  axios.get("https://sagustavo-app.herokuapp.com/historial_laboral/por_id?id_persona=1")
-  .then(res => {
-    console.log("Estamos en el then ", res);
+  axios
+    .get(
+      `${url_base}/historial_laboral/por_id?id_persona=1`
+    )
+    .then((res) => {
+      console.log("Estamos en el then ", res);
 
-    let json = res.data;
+      let json = res.data;
 
-
-    json.forEach((el) => {
+      json.forEach((el) => {
         const $h5 = document.createElement("h5"),
-        $p = document.createElement("p");
+          $p = document.createElement("p");
 
         $p.innerHTML = `${el.descripcion}`;
 
         $h5.className = "mb-4 tm-text-primary";
         $h5.innerHTML = `${el.tipo}`;
 
-        
         $fragment_historial_laboral.appendChild($h5);
         $fragment_historial_laboral.appendChild($p);
-    });
+      });
 
-
-    $historial_laboral.appendChild($fragment_historial_laboral);
-    
-  })
-  .catch(err => {
-    const $p = document.createElement("p");
-    $p.innerHTML = "Error al cargar la historial laboral desde la api: " + err;
-    $historial_laboral.appendChild($p);
-  })
-  .finally(()=>{
-    
-  }); 
-
+      $historial_laboral.appendChild($fragment_historial_laboral);
+    })
+    .catch((err) => {
+      const $p = document.createElement("p");
+      $p.innerHTML =
+        "Error al cargar la historial laboral desde la api: " + err;
+      $historial_laboral.appendChild($p);
+    })
+    .finally(() => {});
 
   //Conocimiento
   const $h3_conocimiento = document.createElement("h3");
@@ -188,75 +176,63 @@
 
   $conocimiento.appendChild($h3_conocimiento);
 
-  
-axios.get("https://sagustavo-app.herokuapp.com/conocimiento/por_id?id_persona=1")
-.then(res => {
-  console.log("Estamos en el then ", res);
+  axios
+    .get(`${url_base}/conocimiento/por_id?id_persona=1`)
+    .then((res) => {
+      console.log("Estamos en el then ", res);
 
-  let json = res.data;
+      let json = res.data;
 
+      json.forEach((el) => {
+        const $p = document.createElement("p");
 
-  json.forEach((el) => {
+        $p.innerHTML = `${el.nombre}, ${el.nivel}`;
+
+        $fragment_conocimiento.appendChild($p);
+      });
+
+      $conocimiento.appendChild($fragment_conocimiento);
+    })
+    .catch((err) => {
       const $p = document.createElement("p");
+      $p.innerHTML = "Error al cargar conocimiento desde la api: " + err;
+      $conocimiento.appendChild($p);
+    })
+    .finally(() => {});
 
-      $p.innerHTML = `${el.nombre}, ${el.nivel}`;
+  //Mis Proyectos
+  axios
+    .get(
+      `${url_base}/mis_proyectos/por_id?id_persona=1`
+    )
+    .then((res) => {
+      console.log("Estamos en el then ", res);
+      console.log("SE EJECUTA AXIOS CON LOS PROYECTOS");
+      let json = res.data;
 
-      $fragment_conocimiento.appendChild($p);
-  });
+      const $div_principal = document.createElement("div"),
+        $h5_pp = document.createElement("h5");
 
+      $div_principal.className = "tm-carousel";
 
-  $conocimiento.appendChild($fragment_conocimiento);
-  
-})
-.catch(err => {
-  const $p = document.createElement("p");
-  $p.innerHTML = "Error al cargar conocimiento desde la api: " + err;
-  $conocimiento.appendChild($p);
-})
-.finally(()=>{
-  
-}); 
+      $mis_proyectos.appendChild($div_principal);
 
-//Mis Proyectos
- axios.get("https://sagustavo-app.herokuapp.com/mis_proyectos/por_id?id_persona=1")
-  .then(res => {
-    console.log("Estamos en el then ", res);
-    console.log("SE EJECUTA AXIOS CON LOS PROYECTOS");
-    let json = res.data;
-
-    const $div_principal = document.createElement("div"), 
-    $h5_pp =document.createElement("h5");
-
-    
-    
-    $div_principal.className = "tm-carousel";
-
-    $mis_proyectos.appendChild($div_principal);
-
-    json.forEach((el) => {
+      json.forEach((el) => {
         //Div pricipal
         const $div = document.createElement("div"),
-        
-
-
-        //Primer subbloque figure
-        $figure = document.createElement("figure"),
-        $img = document.createElement("img"),
-        $figcaption = document.createElement("figcaption"),
-        $ul = document.createElement("ul"),
-        $li = document.createElement("li"),
-        $a = document.createElement("a"),
-        $i = document.createElement("i"), 
-
-        //Segundo subbloque div interior
-        $div_interior = document.createElement("div"),
-        $h3 = document.createElement("h3"),
-        $p = document.createElement("p"),
-        $h4 = document.createElement("h4");
-
-
-
-       
+          //Primer subbloque figure
+          $figure = document.createElement("figure"),
+          $img = document.createElement("img"),
+          $figcaption = document.createElement("figcaption"),
+          $ul = document.createElement("ul"),
+          $li = document.createElement("li"),
+          $a = document.createElement("a"),
+          $i = document.createElement("i"),
+          //Segundo subbloque div interior
+          $div_interior = document.createElement("div"),
+          $h3 = document.createElement("h3"),
+          $p = document.createElement("p"),
+          $h4 = document.createElement("h4");
 
         //div Principal
         $div.className = "tm-carousel-item";
@@ -268,12 +244,11 @@ axios.get("https://sagustavo-app.herokuapp.com/conocimiento/por_id?id_persona=1"
         $img.alt = "Featured Item";
 
         $ul.className = "tm-social";
-        
+
         $a.className = "tm-social-link";
         $a.href = `${el.urlGitHub}`;
-        
-        $i.className = "fab fa-github"
 
+        $i.className = "fab fa-github";
 
         //Segundo subbloque
         $div_interior.className = "tm-about-text";
@@ -285,7 +260,6 @@ axios.get("https://sagustavo-app.herokuapp.com/conocimiento/por_id?id_persona=1"
 
         $h4.className = "tm-text-secondary tm-about-subtitle";
         $h4.innerHTML = `${el.lenguaje}`;
-
 
         //Armado del primer bloque
         $a.appendChild($i);
@@ -302,7 +276,6 @@ axios.get("https://sagustavo-app.herokuapp.com/conocimiento/por_id?id_persona=1"
 
         $div.appendChild($figure);
 
-
         //Armado del segundo bloque
         $div_interior.appendChild($h3);
         $div_interior.appendChild($p);
@@ -311,58 +284,119 @@ axios.get("https://sagustavo-app.herokuapp.com/conocimiento/por_id?id_persona=1"
         $div.appendChild($div_interior);
 
         $div_principal.appendChild($div);
-        
+
         $fragment_mis_proyectos.appendChild($div_principal);
-        
-    });
+      });
 
+      $mis_proyectos.appendChild($fragment_mis_proyectos);
+    })
+    .then(() => {
+      $(".tm-carousel").slick({
+        dots: true,
+        infinite: false,
+        arrows: false,
+        speed: 300,
+        slidesToShow: 6,
+        slidesToScroll: 6,
+        responsive: [
+          {
+            breakpoint: 2500,
+            settings: {
+              slidesToShow: 5,
+              slidesToScroll: 5,
+            },
+          },
+          {
+            breakpoint: 1920,
+            settings: {
+              slidesToShow: 4,
+              slidesToScroll: 4,
+            },
+          },
+          {
+            breakpoint: 1500,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 3,
+            },
+          },
+          {
+            breakpoint: 1260,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+            },
+          },
+          {
+            breakpoint: 1125,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 991,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+            },
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 700,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+            },
+          },
+          {
+            breakpoint: 500,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+        ],
+      });
+    })
+    .catch((err) => {
+      const $p = document.createElement("p");
+      $p.innerHTML = "Error al cargar los proyectos desde la api: " + err;
+      $mis_proyectos.appendChild($p);
+    })
+    .finally(() => {});
 
-    $mis_proyectos.appendChild($fragment_mis_proyectos);
-    
-  })
-  .catch(err => {
-    const $p = document.createElement("p");
-    $p.innerHTML = "Error al cargar los proyectos desde la api: " + err;
-    $mis_proyectos.appendChild($p);
-  })
-  .finally(()=>{
-    
-  }); 
+  //Contacto
 
+  axios
+    .get(`${url_base}/persona/id?id_persona=1`)
+    .then((res) => {
+      let json = res.data;
 
-//Contacto
+      //celular
+      const $texto_celular = document.createTextNode("Tel: " + json.celular);
+      $celular.appendChild($texto_celular);
 
-axios.get("https://sagustavo-app.herokuapp.com/persona/id?id_persona=1").then(res => {
+      //correo
+      const $texto_correo = document.createTextNode("Email: " + json.correo);
+      $correo.appendChild($texto_correo);
+    })
+    .catch((err) => {
+      const $texto_celular = document.createTextNode(
+        "Error al obtener el celulra desde la api: " + err
+      );
+      $celular.appendChild($texto_celular);
 
-    let json = res.data;
-
-    //celular
-    const $texto_celular = document.createTextNode("Tel: " + json.celular);
-    $celular.appendChild($texto_celular);
-
-    //correo
-    const $texto_correo = document.createTextNode("Email: " + json.correo);
-    $correo.appendChild($texto_correo);
-
-  }).catch(err => {
-    const $texto_celular = document.createTextNode("Error al obtener el celulra desde la api: " + err);
-    $celular.appendChild($texto_celular);
-
-    const $texto_correo = document.createTextNode("Error al obtener el correo desde la api: " + err);
-    $correo.appendChild($texto_correo);
-
-  }).finally(()=> {
-
-  });
-
-
-
-
-
-
- 
-  
-
-
-
+      const $texto_correo = document.createTextNode(
+        "Error al obtener el correo desde la api: " + err
+      );
+      $correo.appendChild($texto_correo);
+    })
+    .finally(() => {});
 })();
